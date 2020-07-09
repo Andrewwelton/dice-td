@@ -13,7 +13,6 @@ import { initialState, BoardReducer } from "../reducers/BoardReducer";
 const buildTableRows = (row) => {
   return Object.keys(row).map((rowKey) => (
     <td className="Board-cell align-middle">
-      {" "}
       {row[rowKey] && <FontAwesomeIcon size="4x" icon={faDiceOne} />}
     </td>
   ));
