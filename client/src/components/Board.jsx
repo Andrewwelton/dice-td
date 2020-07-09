@@ -6,14 +6,7 @@ import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faDiceOne,
-  faDiceTwo,
-  faDiceThree,
-  faDiceFour,
-  faDiceFive,
-  faDiceSix,
-} from "@fortawesome/free-solid-svg-icons";
+import { faDiceOne } from "@fortawesome/free-solid-svg-icons";
 
 import { initialState, BoardReducer } from "../reducers/BoardReducer";
 
