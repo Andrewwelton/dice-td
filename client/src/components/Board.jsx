@@ -12,7 +12,10 @@ import { initialState, BoardReducer } from "../reducers/BoardReducer";
 
 const buildTableRows = (row) => {
   return Object.keys(row).map((rowKey) => (
-    <td>{row[rowKey] && <FontAwesomeIcon icon={faDiceOne} />}</td>
+    <td className="Board-cell align-middle">
+      {" "}
+      {row[rowKey] && <FontAwesomeIcon size="4x" icon={faDiceOne} />}
+    </td>
   ));
 };
 
@@ -23,14 +26,18 @@ const Board = () => {
     <Container>
       <Row>
         <Col>
-          <Table>
+          <Table bordered>
             <tbody>
               <tr>{buildTableRows(state["0"])}</tr>
               <tr>{buildTableRows(state["1"])}</tr>
               <tr>{buildTableRows(state["2"])}</tr>
             </tbody>
           </Table>
-          <Button onClick={() => dispatch({ type: "spawn_die" })}>
+          <Button
+            variant="outline-dark"
+            disabled={!state.openSlot}
+            onClick={() => dispatch({ type: "spawn_die" })}
+          >
             Spawn Die
           </Button>
         </Col>

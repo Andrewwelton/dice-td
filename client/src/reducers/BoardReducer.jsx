@@ -47,7 +47,7 @@ function BoardReducer(state, action) {
     case "spawn_die":
       const openSlot = fullBoardCheck(state);
       if (!openSlot) {
-        return { ...state };
+        return { ...state, openSlot };
       }
       let rowNum = Math.floor(Math.random() * 3);
       let colNum = Math.floor(Math.random() * 5);
