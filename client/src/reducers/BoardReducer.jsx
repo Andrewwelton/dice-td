@@ -1,3 +1,5 @@
+import Colours from "../constants/constants";
+
 const initialState = {
   0: {
     0: null,
@@ -56,9 +58,14 @@ function BoardReducer(state, action) {
         colNum = Math.floor(Math.random() * 5);
       }
 
+      let colourNum = Math.floor(Math.random() * Colours.length);
+
       return {
         ...state,
-        [rowNum]: { ...state[rowNum], [colNum]: true },
+        [rowNum]: {
+          ...state[rowNum],
+          [colNum]: { colour: Colours[colourNum] },
+        },
         openSlot,
       };
     default:
