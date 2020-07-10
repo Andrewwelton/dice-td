@@ -68,7 +68,7 @@ const Board = () => {
     <Container>
       <Row>
         <Col xs={6}>
-          <Card bordered bg="light">
+          <Card bordered="true" bg="light">
             <Card-body>
               <DndProvider backend={HTML5Backend}>
                 <Table bordered>
@@ -76,7 +76,7 @@ const Board = () => {
                 </Table>
               </DndProvider>
               <Button
-                style={{ "border-radius": "50%" }}
+                style={{ borderRadius: "50%" }}
                 variant="outline-dark"
                 disabled={!state.openSlot}
                 onClick={(e) => {
