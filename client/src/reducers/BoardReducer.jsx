@@ -1,73 +1,42 @@
-import Colours from "../constants/constants";
+import { Colours } from "../constants/constants";
+
+import { fullBoardCheck } from "../utilities/BoardUtility";
 
 const initialState = {
-  0: {
-    0: null,
-    1: null,
-    2: null,
-    3: null,
-    4: null,
-  },
-  1: {
-    0: null,
-    1: null,
-    2: null,
-    3: null,
-    4: null,
-  },
-  2: {
-    0: null,
-    1: null,
-    2: null,
-    3: null,
-    4: null,
-  },
+  board: [
+    [null, null, null, null, null],
+    [null, null, null, null, null],
+    [null, null, null, null, null],
+  ],
   openSlot: true,
 };
-
-function fullBoardCheck(boardState) {
-  const boardKeys = Object.keys(boardState);
-  let openSlot = false;
-  boardKeys.forEach((key) => {
-    if (key === "openSlot") {
-      return;
-    }
-    let row = boardState[key];
-    const rowKeys = Object.keys(row);
-    rowKeys.forEach((rowKey) => {
-      if (!row[rowKey]) {
-        openSlot = true;
-      }
-    });
-  });
-
-  return openSlot;
-}
 
 function BoardReducer(state, action) {
   switch (action.type) {
     case "spawn_die":
-      const openSlot = fullBoardCheck(state);
-      if (!openSlot) {
-        return { ...state, openSlot };
-      }
-      let rowNum = Math.floor(Math.random() * 3);
-      let colNum = Math.floor(Math.random() * 5);
-      while (state[rowNum][colNum]) {
-        rowNum = Math.floor(Math.random() * 3);
-        colNum = Math.floor(Math.random() * 5);
-      }
-
-      let colourNum = Math.floor(Math.random() * Colours.length);
-
-      return {
+      const newState = {
         ...state,
-        [rowNum]: {
-          ...state[rowNum],
-          [colNum]: { colour: Colours[colourNum] },
-        },
+      };
+      newState.board[action.rowNum][action.colNum] = {
+        colour: Colours[action.colour],
+      };
+
+      const openSlot = fullBoardCheck(state.board);
+      return {
+        ...newState,
         openSlot,
       };
+    case "move_die":
+      const moveState = {
+        ...state,
+        openSlot: true,
+      };
+
+      const dieToMove = state.board[action.sourceRow][action.sourceColumn];
+      moveState.board[action.sourceRow][action.sourceColumn] = null;
+      moveState.board[action.destRow][action.destCol] = dieToMove;
+
+      return moveState;
     default:
       throw new Error("Oh god what");
   }

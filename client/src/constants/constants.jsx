@@ -1,3 +1,5 @@
-const Colours = ["red", "orange", "yellow", "green", "blue", "purple"];
+export const Colours = ["red", "orange", "yellow", "green", "blue", "purple"];
 
-export default Colours;
+export const DraggableTypes = {
+  DICE: "dice",
+};

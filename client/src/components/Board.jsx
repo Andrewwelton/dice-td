@@ -6,18 +6,59 @@ import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiceOne, faDice } from "@fortawesome/free-solid-svg-icons";
+import { faDice } from "@fortawesome/free-solid-svg-icons";
 import Card from "react-bootstrap/Card";
+import { DndProvider, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 import { initialState, BoardReducer } from "../reducers/BoardReducer";
+import { DraggableTypes, Colours } from "../constants/constants";
+import { getSpawnPosition, getSpawnType } from "../utilities/BoardUtility";
 import Dice from "./Dice";
 
-const buildTableRows = (row) => {
-  return Object.keys(row).map((rowKey) => (
-    <td className="Board-cell align-middle">
-      {row[rowKey] && <Dice {...row[rowKey]}></Dice>}
+const BoardSquare = ({ dispatch, children, row, column }) => {
+  const [{ sourceSquare }, drop] = useDrop({
+    accept: DraggableTypes.DICE,
+    drop: () => {
+      dispatch({
+        type: "move_die",
+        sourceRow: sourceSquare.sourceRow,
+        sourceColumn: sourceSquare.sourceColumn,
+        destRow: row,
+        destCol: column,
+      });
+    },
+    collect: (mon) => ({
+      isOver: !!mon.isOver(),
+      canDrop: !!mon.canDrop(),
+      sourceSquare: mon.getItem(),
+    }),
+  });
+
+  return (
+    <td ref={drop} className="Board-cell align-middle">
+      {children}
     </td>
-  ));
+  );
+};
+
+const buildBoard = (boardState, dispatch) => {
+  return boardState.map((row, rowIndex) => {
+    return (
+      <tr key={rowIndex}>
+        {row.map((column, columnIndex) => (
+          <BoardSquare
+            key={rowIndex + columnIndex}
+            dispatch={dispatch}
+            row={rowIndex}
+            column={columnIndex}
+          >
+            {column && <Dice {...column} row={rowIndex} column={columnIndex} />}
+          </BoardSquare>
+        ))}
+      </tr>
+    );
+  });
 };
 
 const Board = () => {
@@ -29,18 +70,20 @@ const Board = () => {
         <Col xs={6}>
           <Card bordered bg="light">
             <Card-body>
-              <Table bordered>
-                <tbody>
-                  <tr>{buildTableRows(state["0"])}</tr>
-                  <tr>{buildTableRows(state["1"])}</tr>
-                  <tr>{buildTableRows(state["2"])}</tr>
-                </tbody>
-              </Table>
+              <DndProvider backend={HTML5Backend}>
+                <Table bordered>
+                  <tbody>{buildBoard(state.board, dispatch)}</tbody>
+                </Table>
+              </DndProvider>
               <Button
                 style={{ "border-radius": "50%" }}
                 variant="outline-dark"
                 disabled={!state.openSlot}
-                onClick={() => dispatch({ type: "spawn_die" })}
+                onClick={(e) => {
+                  const { rowNum, colNum } = getSpawnPosition(state.board);
+                  const colour = getSpawnType(Colours.length);
+                  dispatch({ type: "spawn_die", rowNum, colNum, colour });
+                }}
               >
                 <FontAwesomeIcon size="2x" icon={faDice} />
               </Button>
